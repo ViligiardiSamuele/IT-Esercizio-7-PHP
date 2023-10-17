@@ -45,40 +45,43 @@ if ($check_nome || $check_genere) {
         array_push($ins, "tel");
     if (isset($_POST['inf']))
         array_push($ins, "inf");
-    if (sizeof($ins) >= 3) {
-        $esito = $esito . '<p>Ritultato di ' . $_POST['nominativo'] . ': ';
-        if ($_POST['genere'] == 'm')
-            $esito = $esito . 'non ammesso';
-        else
-            $esito = $esito . 'non ammessa';
-        $esito = $esito . '</p>';
-    } else if (sizeof($ins) > 0) {
-        $esito = $esito . '<p>Ritultato di ' . $_POST['nominativo'] . ': ';
-        if ($_POST['genere'] == 'm')
-            $esito = $esito . 'ammesso';
-        else
-            $esito = $esito . 'ammessa';
+
+    $esito = $esito . '<p>Ritultato di ' . $_POST['nominativo'] . ': ';
+
+    if (sizeof($ins) >= 3) $esito = $esito . 'non';
+
+    if ($_POST['genere'] == 'm')
+        $esito = $esito . 'ammesso';
+    else
+        $esito = $esito . 'ammessa';
+
+    if (sizeof($ins) > 0 && sizeof($ins) < 3) {
         $esito = $esito . ' con debiti a ';
         for ($i = 0; $i < sizeof($ins); $i++) {
             if ($i != 0)
                 $esito = $esito . ' e ';
             $esito = $esito . $ins[$i];
         }
-        $esito = $esito . '</p>';
-    } else if (sizeof($ins) == 0) {
-        $esito = $esito . '<p>Ritultato di ' . $_POST['nominativo'] . ': ';
-        if ($_POST['genere'] == 'm')
-            $esito = $esito . 'ammesso';
-        else
-            $esito = $esito . 'ammessa';
-        $esito = $esito . '</p>';
     }
-    //creazione ed inserimento dell'alunno
-    array_push($_SESSION['alunni'], new Alunno($_POST['nominativo'], $ins, $esito));
 
-    //lista alunni
-    foreach ($_SESSION['alunni'] as $alunno) {
-        echo $alunno->get_esito();
+    $esito = $esito . '</p>';
+    //creazione ed inserimento dell'alunno
+    $studente = new Alunno($_POST['nominativo'], $ins, $esito);
+
+    //controllo alunno ripetuto
+    $ripetuto = false;
+    foreach ($_SESSION['alunni'] as $alunno)
+        if ($studente->compareTo($alunno))
+            $ripetuto = true;
+    if ($ripetuto) {
+        echo '<h1>Alunno ripetuto</h1>';
+    } else {
+        array_push($_SESSION['alunni'], new Alunno($_POST['nominativo'], $ins, $esito));
+
+        //lista alunni
+        foreach ($_SESSION['alunni'] as $alunno) {
+            echo $alunno->get_esito();
+        }
     }
 }
 
@@ -89,3 +92,4 @@ echo '
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>';
+?>

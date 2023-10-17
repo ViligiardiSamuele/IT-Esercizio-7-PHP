@@ -37,4 +37,12 @@ class Alunno
     {
         return $this->esito;
     }
+
+    function compareTo($alunno)
+    {
+        if ($alunno->esito == $this->esito)
+            return true;
+        return false;
+    }
 }
+?>

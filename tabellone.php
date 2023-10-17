@@ -18,6 +18,7 @@ if (isset($_SESSION['alunni'])) {
     foreach ($_SESSION['alunni'] as $alunno) {
         echo $alunno->get_esito();
     }
+    session_destroy();
 } else {
     echo '<h1>Errore sessione non inizializzata!</h1><br>';
     echo '<a href="index.php">Torna indietro</a>';
