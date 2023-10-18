@@ -11,8 +11,8 @@ echo '
     <link rel="stylesheet" href="style.css">
 </head>
 <body data-bs-theme="dark">
-    <div class="card">
-        <div class="card-body">
+    <div class="card mx-auto position-absolute top-50 start-50 translate-middle rounded p-1 sfumatura-1" style="min-width: 400px;">
+        <div class="card-body bg-black rounded">
 ';
 //sessione
 session_start();
@@ -30,7 +30,7 @@ if (!isset($_POST["genere"]))
     $check_genere = true;
 
 if ($check_nome || $check_genere) {
-    $error_msg .= '<h1>Errore: manca ';
+    $error_msg .= '<h1 class="text-warning text-center">Errore: manca ';
     if ($check_nome)
         $error_msg .= 'il nome';
     if ($check_nome && $check_genere)
@@ -38,11 +38,12 @@ if ($check_nome || $check_genere) {
     if ($check_genere)
         $error_msg .= 'il genere';
     $error_msg .= '</h1>';
+    echo $error_msg;
 } else {
     //output
     $HTML_output = '';
     $ins = array();
-    $esito = '';
+    $esito = '<span>';
     if (isset($_POST['ita']))
         array_push($ins, "ita");
     if (isset($_POST['mat']))
@@ -52,7 +53,7 @@ if ($check_nome || $check_genere) {
     if (isset($_POST['inf']))
         array_push($ins, "inf");
 
-    $esito = $esito . '<p>Ritultato di ' . $_POST['nominativo'] . ': ';
+    $esito = $esito . 'Ritultato di ' . $_POST['nominativo'] . ': ';
 
     if (sizeof($ins) >= 3) $esito = $esito . 'non';
 
@@ -69,7 +70,7 @@ if ($check_nome || $check_genere) {
             $esito = $esito . $ins[$i];
         }
     }
-    $esito .= '</p>';
+    $esito .= '</span>';
 
     //creazione dell'alunno
     $studente = new Alunno($_POST['nominativo'], $ins, $esito);
@@ -80,23 +81,25 @@ if ($check_nome || $check_genere) {
         if ($studente->compareTo($alunno))
             $ripetuto = true;
     if ($ripetuto) {
-        $error_msg = '<h1>Alunno ripetuto</h1>';
+        echo '<h1 class="text-warning text-center">Errore: Alunno ripetuto</h1>';
     } else {
         array_push($_SESSION['alunni'], new Alunno($_POST['nominativo'], $ins, $esito));
-        echo '<table class="table"><tr>';
+
         //lista alunni
+        echo '<ul class="list-group list-group-flush">';
         foreach ($_SESSION['alunni'] as $alunno) {
-            /** 
-             * FINIRE OUTPUT ALUNNI CON TABELLA
-             */
-            echo '' . $alunno->get_esito();
+            echo '<div class="bg-secondary p-1 mb-1 rounded "><li class="list-group-item rounded text-center">'
+                . $alunno->get_esito() . '</li></div>';
         }
-        echo '</tr></table>';
+        echo '</ul>';
     }
 }
-
-echo '<a href="index.php">Inserisci un nuovo utente</a><br>';
-echo '<a href="tabellone.php">Termina scrutinio</a>';
+echo '
+    <div class="btn-group w-100">
+        <a href="index.php" class="btn btn-primary">Inserisci un nuovo utente</a>';
+if ($error_msg == '')
+    echo '<a href="tabellone.php" class="btn btn-success">Termina scrutinio</a>';
+echo '</div>';
 
 echo '
         </div>

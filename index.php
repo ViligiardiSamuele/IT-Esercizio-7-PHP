@@ -12,14 +12,14 @@ echo '
 <body data-bs-theme="dark">';
 
 echo '
-<form action="risultati.php" method="post" class="mx-auto position-absolute top-50 start-50 translate-middle rounded p-1 sfumatura-1">
+<form action="risultati.php" method="post" class="mx-auto position-absolute top-50 start-50 translate-middle rounded p-1 sfumatura-1" style="min-width: 400px;">
 <div class="container rounded bg-black p-1">
     <div class="row mb-1">
-        <div class="col-4 text-end">Nominativo:</div>
+        <div class="col-4 text-end align-middle">Nominativo:</div>
         <div class="col-8"><input class="form-control" type=text name=nominativo></div>
     </div>
     <div class="row mb-1">
-        <div class="col-4 text-end">Genere:</div>
+        <div class="col-4 text-end align-middle">Genere:</div>
         <div class="col-8">
             <input id="m" type=radio value="m" name=genere>
             <label for="m">M</label>
@@ -29,7 +29,7 @@ echo '
         </div>
     </div>
     <div class="row mb-1">
-        <div class="col-4 text-end">Debiti:</div>
+        <div class="col-4 text-end align-middle">Debiti:</div>
         <div class="col-8">
             <input type="checkbox" id="ita" name="ita" value="ita">
             <label for="ita">ITA</label>
