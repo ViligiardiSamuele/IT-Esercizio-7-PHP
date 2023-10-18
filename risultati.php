@@ -8,8 +8,12 @@ echo '
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <title>IT-Esercizio-7-PHP</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body data-bs-theme="dark">';
+<body data-bs-theme="dark">
+    <div class="card">
+        <div class="card-body">
+';
 //sessione
 session_start();
 if (!isset($_SESSION['alunni'])) {
@@ -17,6 +21,7 @@ if (!isset($_SESSION['alunni'])) {
 }
 
 //controllo form
+$error_msg = '';
 $check_genere = false;
 $check_nome = false;
 if (!isset($_POST["nominativo"]) || trim($_POST["nominativo"]) == '')
@@ -25,16 +30,17 @@ if (!isset($_POST["genere"]))
     $check_genere = true;
 
 if ($check_nome || $check_genere) {
-    echo '<h1>Errore: manca ';
+    $error_msg .= '<h1>Errore: manca ';
     if ($check_nome)
-        echo 'il nome';
+        $error_msg .= 'il nome';
     if ($check_nome && $check_genere)
-        echo ' e ';
+        $error_msg .= ' e ';
     if ($check_genere)
-        echo 'il genere';
-    echo '</h1>';
+        $error_msg .= 'il genere';
+    $error_msg .= '</h1>';
 } else {
     //output
+    $HTML_output = '';
     $ins = array();
     $esito = '';
     if (isset($_POST['ita']))
@@ -63,9 +69,9 @@ if ($check_nome || $check_genere) {
             $esito = $esito . $ins[$i];
         }
     }
+    $esito .= '</p>';
 
-    $esito = $esito . '</p>';
-    //creazione ed inserimento dell'alunno
+    //creazione dell'alunno
     $studente = new Alunno($_POST['nominativo'], $ins, $esito);
 
     //controllo alunno ripetuto
@@ -74,14 +80,18 @@ if ($check_nome || $check_genere) {
         if ($studente->compareTo($alunno))
             $ripetuto = true;
     if ($ripetuto) {
-        echo '<h1>Alunno ripetuto</h1>';
+        $error_msg = '<h1>Alunno ripetuto</h1>';
     } else {
         array_push($_SESSION['alunni'], new Alunno($_POST['nominativo'], $ins, $esito));
-
+        echo '<table class="table"><tr>';
         //lista alunni
         foreach ($_SESSION['alunni'] as $alunno) {
-            echo $alunno->get_esito();
+            /** 
+             * FINIRE OUTPUT ALUNNI CON TABELLA
+             */
+            echo '' . $alunno->get_esito();
         }
+        echo '</tr></table>';
     }
 }
 
@@ -89,7 +99,8 @@ echo '<a href="index.php">Inserisci un nuovo utente</a><br>';
 echo '<a href="tabellone.php">Termina scrutinio</a>';
 
 echo '
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>';
-?>
